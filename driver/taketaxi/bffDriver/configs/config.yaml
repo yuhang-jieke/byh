@@ -1,0 +1,26 @@
+server:
+  host: 0.0.0.0
+  port: 8080
+  grpc_host: 127.0.0.1
+  grpc_port: 8001
+
+redis:
+  Host: 115.190.57.118
+  Port: 6379
+  Password: 4ay1nkal3u8ed77y
+  Database: 0
+
+amap:
+  web_api_key: "493bea90344b7ce457f09abdaa7b0622"
+  web_api_sign_key: "e198c575a004175a1d055a2f09611834"
+
+mongo:
+  uri: "mongodb://root:4ay1nkal3u8ed77y@115.190.57.118:27017"
+  database: driver_place
+
+ai:
+  llm_api_key: "sk-84d2c70f00e846ecb70ba5d8f52f3ea0"
+  llm_model: "deepseek-v4-flash"
+  tts_api_key: "CBbvrvzNWHck9HFAzWajqlYw"
+  tts_secret_key: "57Zp22whEvuAMmFeydnPRik63qXgVm22"
+  tts_api_url: "https://tsn.baidu.com/text2audio"

@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(go mod *)",
+      "Bash(bash scripts/gen_proto.sh)",
+      "Bash(mv driver/driver.pb.go driver/driver_grpc.pb.go .)",
+      "Bash(rm -rf driver)",
+      "Bash(go build *)",
+      "Bash(protoc driver.proto --go_out=../kitexGen --go_opt=paths=source_relative --go-grpc_out=../kitexGen --go-grpc_opt=paths=source_relative)",
+      "Bash(echo \"EXIT: $?\")"
+    ]
+  }
+}

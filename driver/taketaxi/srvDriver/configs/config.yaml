@@ -1,0 +1,29 @@
+server:
+  host: 0.0.0.0
+  port: 8001
+
+database:
+  host: 115.190.57.118
+  port: 3306
+  user: root
+  password: 4ay1nkal3u8ed77y
+  database: shayu
+redis:
+  Host: 115.190.57.118
+  Port: 6379
+  Password: 4ay1nkal3u8ed77y
+  Database: 0
+mongo:
+  uri: "mongodb://root:4ay1nkal3u8ed77y@115.190.57.118:27017"
+  database: driver_place
+dispatch:
+  radius_km: 3.0
+  min_service_score: 60.0
+  arrive_check_radius: 30.0
+  end_trip_check_radius: 30.0
+  expanded_radius_km: 8.0
+  max_expanded_attempts: 3
+  rejection_threshold: 3
+  dispatch_timeout_sec: 30
+  pool_timeout_sec: 1800
+  pool_retry_interval_sec: 30

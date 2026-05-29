@@ -1,0 +1,337 @@
+syntax = "proto3";
+package driver;
+option go_package = "taketaxi/common/kitexGen/driver";
+//protoc driver.proto --go_out=../../common/kitexGen --go_opt=paths=source_relative --go-grpc_out=../../common/kitexGen --go-grpc_opt=paths=source_relative
+service DriverService {
+  rpc Create(CreateDriverReq) returns (CreateDriverResp);
+  rpc Get(GetDriverReq) returns (GetDriverResp);
+  rpc List(ListDriverReq) returns (ListDriverResp);
+  rpc Update(UpdateDriverReq) returns (UpdateDriverResp);
+  rpc Delete(DeleteDriverReq) returns (DeleteDriverResp);
+
+  // 司机出车上线
+  rpc GoOnline(GoOnlineReq) returns (GoOnlineResp);
+  // 停止听单 (在线听单 → 在线空闲)
+  rpc SetIdle(SetIdleReq) returns (SetIdleResp);
+  // 开始听单
+  rpc StartListening(StartListeningReq) returns (StartListeningResp);
+  // 收车下线
+  rpc GoOffline(GoOfflineReq) returns (GoOfflineResp);
+  // 位置上报
+  rpc ReportLocation(ReportLocationReq) returns (ReportLocationResp);
+  // 派单
+  rpc DispatchOrder(DispatchOrderReq) returns (DispatchOrderResp);
+  // 司机接单
+  rpc AcceptOrder(AcceptOrderReq) returns (AcceptOrderResp);
+  // 司机拒绝接单
+  rpc RejectOrder(RejectOrderReq) returns (RejectOrderResp);
+  // 司机取消订单（已接单后主动取消）
+  rpc CancelOrder(CancelOrderReq) returns (CancelOrderResp);
+  // 司机已到达
+  rpc DriverArrive(DriverArriveReq) returns (DriverArriveResp);
+  // 开始行程
+  rpc StartTrip(StartTripReq) returns (StartTripResp);
+  // 到达目的地
+  rpc EndTrip(EndTripReq) returns (EndTripResp);
+  // 验证乘客手机号后四位
+  rpc VerifyPassengerPhone(VerifyPassengerPhoneReq) returns (VerifyPassengerPhoneResp);
+  // 抢单池：查看池中订单
+  rpc ListPoolOrders(ListPoolOrdersReq) returns (ListPoolOrdersResp);
+  // 抢单：司机抢单
+  rpc GrabOrder(GrabOrderReq) returns (GrabOrderResp);
+  // 订单列表
+  rpc ListOrders(ListOrdersReq) returns (ListOrdersResp);
+  // 订单详情
+  rpc GetOrder(GetOrderReq) returns (GetOrderResp);
+}
+
+message CreateDriverReq { string name = 1; }
+message CreateDriverResp { int64 id = 1; }
+message GetDriverReq { int64 id = 1; }
+message GetDriverResp {
+  int64 id = 1;
+  string name = 2;
+  int32 status = 3;
+  string mobile = 4;
+  string nickname = 5;
+  int32 work_status = 6;
+  float service_score = 7;
+  int32 order_count = 8;
+  float total_income = 9;
+}
+message ListDriverReq {}
+message DriverItem { int64 id = 1; string name = 2; int32 status = 3; }
+message ListDriverResp { repeated DriverItem items = 1; }
+message UpdateDriverReq { int64 id = 1; string name = 2; }
+message UpdateDriverResp { bool success = 1; }
+message DeleteDriverReq { int64 id = 1; }
+message DeleteDriverResp { bool success = 1; }
+
+// 出车上线
+message GoOnlineReq {
+  int64 driver_id = 1;
+}
+message GoOnlineResp {
+  bool success = 1;
+  int32 err_code = 2;
+  string message = 3;
+}
+
+// 停止听单 (收车但不下线)
+message SetIdleReq {
+  int64 driver_id = 1;
+}
+message SetIdleResp {
+  bool success = 1;
+  int32 err_code = 2;
+  string message = 3;
+}
+
+// 开始听单
+message StartListeningReq {
+  int64 driver_id = 1;
+  double lat = 2;
+  double lng = 3;
+}
+message StartListeningResp {
+  bool success = 1;
+  int32 err_code = 2;
+  string message = 3;
+}
+
+// 收车下线
+message GoOfflineReq {
+  int64 driver_id = 1;
+}
+message GoOfflineResp {
+  bool success = 1;
+  int32 err_code = 2;
+  string message = 3;
+}
+
+// 位置上报
+message ReportLocationReq {
+  int64 driver_id = 1;
+  double lat = 2;
+  double lng = 3;
+  double heading = 4;
+  double speed = 5;
+  int32 status = 6;
+}
+message ReportLocationResp {
+  bool success = 1;
+  int32 err_code = 2;
+  string message = 3;
+}
+
+
+//protoc driver.proto `
+//--go_out=../kitexGen `
+//--go_opt=paths=source_relative `
+//--go-grpc_out=../kitexGen `
+//--go-grpc_opt=paths=source_relative
+
+// 派单
+message DispatchOrderReq {
+  int64 order_id = 1;
+  string order_no = 2;
+  int32 service_type = 3;  // 1-快车 2-特惠快车
+  double origin_lat = 4;   // 起点纬度
+  double origin_lng = 5;   // 起点经度
+  int64 passenger_id = 6;
+}
+message DispatchOrderResp {
+  bool success = 1;
+  int32 err_code = 2;
+  string message = 3;
+}
+
+// 司机接单
+message AcceptOrderReq {
+  int64 order_id = 1;
+  int64 driver_id = 2;
+}
+message AcceptOrderResp {
+  bool success = 1;
+  int32 err_code = 2;
+  string message = 3;
+}
+
+// 司机拒绝接单
+message RejectOrderReq {
+  int64 order_id = 1;
+  int64 driver_id = 2;
+}
+message RejectOrderResp {
+  bool success = 1;
+  int32 err_code = 2;
+  string message = 3;
+}
+
+// 司机取消订单
+message CancelOrderReq {
+  int64 order_id = 1;
+  int64 driver_id = 2;
+  string cancel_reason = 3;
+}
+message CancelOrderResp {
+  bool success = 1;
+  int32 err_code = 2;
+  string message = 3;
+}
+
+// 司机已到达
+message DriverArriveReq {
+  int64 order_id = 1;
+  int64 driver_id = 2;
+}
+message DriverArriveResp {
+  bool success = 1;
+  int32 err_code = 2;
+  string message = 3;
+}
+
+// 开始行程
+message StartTripReq {
+  int64 order_id = 1;
+  int64 driver_id = 2;
+}
+message StartTripResp {
+  bool success = 1;
+  int32 err_code = 2;
+  string message = 3;
+}
+
+// 到达目的地
+message EndTripReq {
+  int64 order_id = 1;
+  int64 driver_id = 2;
+}
+message EndTripResp {
+  bool success = 1;
+  int32 err_code = 2;
+  string message = 3;
+}
+
+// 抢单池：查看池中订单
+message ListPoolOrdersReq {
+  int64 driver_id = 1;
+  int32 page = 2;       // 页码，默认 1
+  int32 page_size = 3;  // 每页数量，默认 20，最大 30
+}
+message PoolOrderItem {
+  int64 order_id = 1;
+  string order_no = 2;
+  int32 service_type = 3;         // 1-快车 2-特惠快车
+  double origin_lat = 4;
+  double origin_lng = 5;
+  string origin_address = 6;
+  double dest_lat = 7;
+  double dest_lng = 8;
+  string dest_address = 9;
+  int64 passenger_id = 10;
+  string passenger_name = 11;
+  float estimate_distance = 12;   // 预估里程(米)
+  float estimate_fee = 13;        // 预估费用
+  int64 created_at = 14;          // 下单时间(秒级时间戳)
+  int64 seconds_left = 15;        // 剩余抢单秒数
+}
+message ListPoolOrdersResp {
+  bool success = 1;
+  repeated PoolOrderItem items = 2;
+  int32 total = 3;
+}
+
+// 验证乘客手机号后四位
+message VerifyPassengerPhoneReq {
+  int64 order_id = 1;
+  int64 driver_id = 2;
+  string phone_last4 = 3;
+}
+message VerifyPassengerPhoneResp {
+  bool success = 1;
+  int32 err_code = 2;
+  string message = 3;
+}
+
+// 抢单
+message GrabOrderReq {
+  int64 order_id = 1;
+  int64 driver_id = 2;
+}
+message GrabOrderResp {
+  bool success = 1;
+  int32 err_code = 2;
+  string message = 3;
+  int64 order_id = 4;
+}
+
+// 订单列表
+message ListOrdersReq {
+  int64 driver_id = 1;
+  string date = 2;       // 查询日期 2006-01-02，为空则查今日
+  int32 cursor = 3;      // 游标偏移量，默认 0，每次 20 条
+  bool is_all = 4;       // 是否查全部历史订单
+}
+message OrderItem {
+  int64 order_id = 1;           // 订单ID
+  string order_no = 2;
+  int32 service_type = 3;     // 1-快车 2-特惠快车
+  string origin_address = 4;
+  string dest_address = 5;
+  float distance_km = 6;      // 行驶里程(公里)
+  float duration_min = 7;     // 行驶时长(分钟)
+  int32 status = 8;
+  int64 created_at = 9;       // 下单时间(秒级时间戳)
+  float estimate_fee = 10;    // 预估费用
+  int64 driver_id = 11;       // 司机ID
+  double origin_lat = 12;     // 起点纬度
+  double origin_lng = 13;     // 起点经度
+  double dest_lat = 14;       // 终点纬度
+  double dest_lng = 15;       // 终点经度
+}
+message ListOrdersResp {
+  bool success = 1;
+  repeated OrderItem items = 2;
+}
+
+// 订单详情
+message GetOrderReq {
+  int64 order_id = 1;
+  int64 driver_id = 2;
+}
+message OrderNode {
+  string name = 1;    // 节点名称
+  int64 time = 2;     // 时间(秒级时间戳)
+}
+message GetOrderResp {
+  bool success = 1;
+  int32 err_code = 2;
+  string message = 3;
+  int64 order_id = 25;         // 订单ID
+  string order_no = 4;
+  int32 status = 5;
+  int64 created_at = 6;      // 下单时间
+  int64 completed_at = 7;    // 完成时间
+  string origin_address = 8;
+  string dest_address = 9;
+  float distance_km = 10;
+  float duration_min = 11;
+  string passenger_name = 12;
+  string passenger_mobile = 13;
+  int32 passenger_score = 14;
+  string passenger_comment = 15;
+  float total_fee = 16;
+  float platform_commission = 17;
+  float driver_income = 18;
+  int32 pay_type = 19;
+  repeated OrderNode nodes = 20;  // 行程节点时间线
+  float base_fee = 21;            // 基础费
+  float distance_fee = 22;        // 里程费
+  float duration_fee = 23;        // 时长费
+  float wait_fee = 24;            // 等待费
+  double origin_lat = 26;         // 起点纬度
+  double origin_lng = 27;         // 起点经度
+  double dest_lat = 28;           // 终点纬度
+  double dest_lng = 29;           // 终点经度
+}

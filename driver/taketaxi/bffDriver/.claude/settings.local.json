@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(identify \"C:/Users/35305/Desktop/drivers/img/img.png\")",
+      "Bash(mkdir -p \"C:/Users/35305/Desktop/drivers/driver/driverfrontend/public/dh\")",
+      "Bash(cp \"C:/Users/35305/Desktop/drivers/img/img.png\" \"C:/Users/35305/Desktop/drivers/driver/driverfrontend/public/dh/img.png\")",
+      "Bash(npm install *)",
+      "Bash(node -e \"console.log\\(require\\('react/package.json'\\).version\\)\")",
+      "Bash(npx vite *)",
+      "Bash(npx gltf-transform *)",
+      "Bash(npm run *)",
+      "Bash(curl *)",
+      "Bash(convert \"C:\\\\Users\\\\35305\\\\Pictures\\\\Screenshots\\\\屏幕截图 2026-05-06 150100.png\" -resize 4x4 txt:-)"
+    ]
+  }
+}
